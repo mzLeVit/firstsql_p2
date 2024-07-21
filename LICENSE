@@ -1,0 +1,7 @@
+
+### Notes:
+
+1. **Customization**: Update the `git clone` URL and `LICENSE` link according to your repository and license information.
+2. **Database Configuration**: Make sure the `DATABASE_URL` in `seed2.py` points to the correct location of your database.
+
+Feel free to adjust the README content based on any specific needs or additional functionalities you might have.
