@@ -1,4 +1,4 @@
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, aliased
 from sqlalchemy import create_engine, func
 from my_models import Student, Group, Teacher, Subject, Grade
 
@@ -80,3 +80,34 @@ def select_10(student_id, teacher_id):
                   .filter(Grade.student_id == student_id, Subject.teacher_id == teacher_id)\
                   .group_by(Subject.id)\
                   .all()
+
+def avg_grade_by_teacher_for_student(student_id, teacher_id):
+    # Середній бал, який певний викладач ставить певному студентові.
+    return session.query(func.avg(Grade.score).label('average_score'))\
+                  .join(Subject, Grade.subject_id == Subject.id)\
+                  .join(Teacher, Subject.teacher_id == Teacher.id)\
+                  .filter(Grade.student_id == student_id)\
+                  .filter(Teacher.id == teacher_id)\
+                  .scalar()
+
+def grades_last_session_in_group(subject_id, group_id):
+    # Оцінки студентів у певній групі з певного предмета на останньому занятті.
+    subquery = (
+        session.query(Grade.student_id, func.max(Grade.date).label('last_date'))
+        .join(Student, Student.id == Grade.student_id)
+        .filter(Student.group_id == group_id)
+        .filter(Grade.subject_id == subject_id)
+        .group_by(Grade.student_id)
+        .subquery()
+    )
+    subquery_alias = aliased(subquery)
+
+
+    return (
+        session.query(Student.id, Student.name, Grade.score, Grade.date)
+        .join(Grade, Grade.student_id == Student.id)
+        .join(subquery_alias, (Grade.student_id == subquery_alias.c.student_id) & (Grade.date == subquery_alias.c.last_date))
+        .filter(Student.group_id == group_id)
+        .filter(Grade.subject_id == subject_id)
+        .all()
+    )
