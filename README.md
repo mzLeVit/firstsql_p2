@@ -19,7 +19,7 @@ This project provides a command-line interface (CLI) for performing CRUD (Create
 If you haven't already, you can install SQLAlchemy using pip:
 pip install sqlalchemy
 
-3.Set up your database:
+3. Set up your database:
 Ensure that you have a SQLite database file or adjust the DATABASE_URL in the seed2.py script to point to your database.
 
       Usage
@@ -48,7 +48,7 @@ python seed2.py --action ACTION --model MODEL [--id ID] [--name NAME]
 python seed2.py --action create --model Teacher --name 'Boris Johnson'
 2. List all teachers:
 python seed2.py --action list --model Teacher
-3.Update a teacher's information:
+3. Update a teacher's information:
 python seed2.py --action update --model Teacher --id 3 --name 'Andry Bezos'
 4. Remove a teacher:
 python seed2.py --action remove --model Teacher --id 3
